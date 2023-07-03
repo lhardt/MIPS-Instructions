@@ -18,7 +18,7 @@ Instructions to implement:
 
 | **Progress**   | **Monocycle**  | **Multicycle**  | **Pipeline**  |
 |----------------|----------------|-----------------|---------------|
-| BLTZ           | -              | -               | -             |
+| BLTZ           | ✅             | -               | -             |
 | DIV            | -              | -               | -             |
 | JAL            | -              | -               | -             |
 | LB             | -              | -               | -             |
