@@ -18,9 +18,9 @@ Instructions to implement:
 
 | **Progress**   | **Monocycle**  | **Multicycle**  | **Pipeline**  |
 |----------------|----------------|-----------------|---------------|
-| BLTZ           | ✅             | -               | -             |
+| BLTZ           | ✅             | ✅               | -             |
 | DIV            | ✅             | -               | -             |
-| JAL            | ✅             | -               | -             |
+| JAL            | ✅             | ✅               | -             |
 | LB             | ✅             | ✅             | -             |
 | SLTIU          | ✅             | -               | -             |
 
@@ -30,7 +30,9 @@ Instructions to implement:
 
 A instrução BLTZ tem opcode `00 0001`. Portanto, ela é configurada na região `01` do ROM do bloco de controle. Além disso, ela deve ter um `ft2` fixo como `00000`. Como nenhuma outra instrução de mesmo opcode deve ser implementada (BGEZ, BGEZAL, BLTZAL), apenas devemos reconhecer o opcode e ativar o JMP se duas condições forem atingidas: `ft2 = 00000` e `BReg[ft1] < 0`. 
 
-Para verificar se um número é menor que zero, basta ver seu bit mais significativo.
+Para verificar se um número é menor que zero, basta ver seu bit mais significativo. 
+
+- **(Multicycle)**: Assim como em outras instruções, escolhemos aproveitar códigos de instrução e saídas antigas. Como a instrução BEQ é a única outra `Branch`, e ela utiliza `ALUSrcA=1`, podemos definir `PCWriteCon=1 && ALUSrcA=0` como representando `BLTZ_Instr`. Então basta fazer um AND entre `BLTZ_INSTR`, `LTZ` e `BLTZ_Code` como uma outra possível condição de branch, similarmente à implementação no Monociclo.
 
 
 ## Division
