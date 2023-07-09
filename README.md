@@ -28,9 +28,23 @@ Instructions to implement:
 
 ## Branch on Less Than Zero
 
+A instrução BLTZ tem opcode `00 0001`. Portanto, ela é configurada na região `01` do ROM do bloco de controle. Além disso, ela deve ter um `ft2` fixo como `00000`. Como nenhuma outra instrução de mesmo opcode deve ser implementada (BGEZ, BGEZAL, BLTZAL), apenas devemos reconhecer o opcode e ativar o JMP se duas condições forem atingidas: `ft2 = 00000` e `BReg[ft1] < 0`. 
+
+Para verificar se um número é menor que zero, basta ver seu bit mais significativo.
+
+
 ## Division
 
 ## Jump and Link
+
+- **(Multicycle)** Aumentamos o MUX entre o MDR e o BReg Data In para acomodar mais um bit. A partir daí, usamos a constante 0x1F (31) como endereço de escrita e PC como valor de escrita no BReg. Quando isso estiver pronto, basta usar o estado `9` para ler o novo PC de `IMED`.
+
+1. RI <- M[PC];  (Estado `0`)
+2. BReg[31] <- PC (Novo Estado `B`)
+3. PC <- IMED  (Estado `9`, usado em JUMP)
+
+**Estado B:**
+PCWrite = 1; ALUOP = 10, causando Link=1
 
 ## Load Byte
 
