@@ -21,7 +21,7 @@ Instructions to implement:
 | BLTZ           | ✅             | -               | -             |
 | DIV            | ✅             | -               | -             |
 | JAL            | ✅             | -               | -             |
-| LB             | ✅             | -               | -             |
+| LB             | ✅             | ✅             | -             |
 | SLTIU          | ✅             | -               | -             |
 
 # Implementação
@@ -36,9 +36,15 @@ Instructions to implement:
 
 A instrução Load Byte tem opcode `10 0000`. Portanto, ela é configurada na região `20` da ROM do bloco de controle. Seu comportamento é muito similar ao da instrução `LW`, mas é necessário fazer alguns ajustes:
 
-- Criamos um bit de controle chamado `ByteMemToReg`.
-- A memória é lida sempre de palavra em palavra, de forma que os dois últimos bits do endereço eram descartados. Para carregar apenas um byte, usamos esses dois últimos bits para alimentar um MUX que escolhe qual byte dentro da palavra lida deve ser usado. 
-- O resultado desse mux deve sofrer um SGEXT de 8 para 32 bits.
-- O resultado do SGEXT deve ser tratado da mesma forma que o resultado do `LW`. Usamos o `ByteMemToReg` para decidir qual dos dois será escrito no BReg. 
+1. Criamos um bit de controle chamado `ByteMemToReg`.
+2. A memória é lida sempre de palavra em palavra, de forma que os dois últimos bits do endereço eram descartados. Para carregar apenas um byte, usamos esses dois últimos bits para alimentar um MUX que escolhe qual byte dentro da palavra lida deve ser usado. 
+3. O resultado desse mux deve sofrer um SGEXT de 8 para 32 bits.
+4. O resultado do SGEXT deve ser tratado da mesma forma que o resultado do `LW`. Usamos o `ByteMemToReg` para decidir qual dos dois será escrito no BReg. 
+
+5. **(Multicycle)**: Na ROM de próximo estágio, utilizaremos no LB (entradas `20X`) os mesmos estágios de LW (entradas `23X`). Exceto no quarto estágio, em que `MDR <- M[ALU_OUT]`, em que utilizaremos um novo estado para discernir que só salvaremos um byte. Utilizaremos o primeiro código de estado livre, `A`.
+
+6. **(Multicycle)**: No estado `A`, ativaremos todos os bits do estágio `3` de LW, mais o bit de `ByteMemToReg`. No entanto, não conseguimos criar um novo bit saindo da ROM de saída da máquina de estados sem aumentar sua largura e criar muito hardware. Por isso, escolhemos *reaproveitar* o bit 0 de `ALUop` para *também* significar `ByteMemToReg`, dado que esse bit não será utilizado nesse estágio. Assim, o código da saída de `A`é `3004`
+
+7. **(Multicycle)** Escolhemos fazer essa mudança no estágio 4 pois é quando o endereço está na saída de ALU OUT. Basta que o MUX do item (2) esteja entre a saída de MEM e a entrada de MDR.
 
 ## Set on Less than Immediate Unsigned
