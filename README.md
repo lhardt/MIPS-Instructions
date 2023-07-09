@@ -23,3 +23,22 @@ Instructions to implement:
 | JAL            | ✅             | -               | -             |
 | LB             | ✅             | -               | -             |
 | SLTIU          | ✅             | -               | -             |
+
+# Implementação
+
+## Branch on Less Than Zero
+
+## Division
+
+## Jump and Link
+
+## Load Byte
+
+A instrução Load Byte tem opcode `10 0000`. Portanto, ela é configurada na região `20` da ROM do bloco de controle. Seu comportamento é muito similar ao da instrução `LW`, mas é necessário fazer alguns ajustes:
+
+- Criamos um bit de controle chamado `ByteMemToReg`.
+- A memória é lida sempre de palavra em palavra, de forma que os dois últimos bits do endereço eram descartados. Para carregar apenas um byte, usamos esses dois últimos bits para alimentar um MUX que escolhe qual byte dentro da palavra lida deve ser usado. 
+- O resultado desse mux deve sofrer um SGEXT de 8 para 32 bits.
+- O resultado do SGEXT deve ser tratado da mesma forma que o resultado do `LW`. Usamos o `ByteMemToReg` para decidir qual dos dois será escrito no BReg. 
+
+## Set on Less than Immediate Unsigned
