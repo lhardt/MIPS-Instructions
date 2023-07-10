@@ -19,11 +19,11 @@ Instructions to implement:
 
 | **Progress**   | **Monocycle**  | **Multicycle**  | **Pipeline**  |
 |----------------|----------------|-----------------|---------------|
-| BLTZ           | ✅             | 🟨               | -             |
-| DIV            | ✅             | 🟨               | -             |
-| JAL            | ✅             | 🟨               | -             |
-| LB             | ✅             | 🟨             | -             |
-| SLTIU          | ✅             | -               | -             |
+| BLTZ           | ✅             | 🟨               | ✅             |
+| DIV            | ✅             | 🟨               | ✅             |
+| JAL            | ✅             | 🟨               | ✅             |
+| LB             | ✅             | 🟨             | ✅             |
+| SLTIU          | ✅             | -               | ✅             |
 
 # Implementação
 
@@ -44,15 +44,15 @@ Dessa forma, só precisamos criar os caminhos de escrita do HI/LO, assim como re
 
 ## Jump and Link
 
-- **(Multicycle)** Aumentamos o MUX entre o MDR e o BReg Data In para acomodar mais um bit. A partir daí, usamos a constante 0x1F (31) como endereço de escrita e PC como valor de escrita no BReg. Quando isso estiver pronto, basta usar o estado `9` para ler o novo PC de `IMED`.
+A instrução Jump and Link é muito semelhante à instrução JUMP. Aumentamos o MUX entre o MDR e o BReg Data In para acomodar mais um bit de seleção, de forma que possamos escolher a constante 31 como endereço de escrita. 
 
-1. RI <- M[PC];  (Estado `0`)
-2. BReg[31] <- PC (Novo Estado `B`)
-3. PC <- IMED  (Estado `9`, usado em JUMP)
+- **(Multicycle)** Podemos utilizar o estado `9` para ler o novo PC de `IMED`. \
+    **Estado B:**  PCWrite = 1; ALUOP = 10, causando Link=1
 
-**Estado B:**
-PCWrite = 1; ALUOP = 10, causando Link=1
-
+    1. RI <- M[PC];  (Estado `0`)
+    2. BReg[31] <- PC (Novo Estado `B`)
+    3. PC <- IMED  (Estado `9`, usado em JUMP)
+ 
 ## Load Byte
 
 A instrução Load Byte tem opcode `10 0000`. Portanto, ela é configurada na região `20` da ROM do bloco de controle. Seu comportamento é muito similar ao da instrução `LW`, mas é necessário fazer alguns ajustes:
@@ -69,3 +69,11 @@ A instrução Load Byte tem opcode `10 0000`. Portanto, ela é configurada na re
 7. **(Multicycle)** Escolhemos fazer essa mudança no estágio 4 pois é quando o endereço está na saída de ALU OUT. Basta que o MUX do item (2) esteja entre a saída de MEM e a entrada de MDR.
 
 ## Set on Less than Immediate Unsigned
+
+Para implementar SLTIU, utilizamos um comparador configurado como "unsigned". A saída `<` do comparador (após SGEXT de 1 para 32 bits) é colocada como entrada de um MUX, cuja outra entrada é ALU_OUT. Depois disso, basta escrever esta saída normalmente em BReg.
+
+- **(Multicycle)** Não devemos implementar Podemos utilizar um novo estado `D`.
+    1. RI <- M[PC];   (estado `0`)
+    2. A <- Breg[ft1]; B <- Breg[ft2]; (estado `1`)
+    3. ALU_Out <- SgExt(A cmp (SgExt Imed)); (novo estado `D`)
+    4. Breg[ft2] <- ALU_Out (estado `7`)

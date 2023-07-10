@@ -90,6 +90,7 @@
     <wire from="(810,680)" to="(810,760)"/>
     <wire from="(420,830)" to="(460,830)"/>
     <wire from="(630,420)" to="(650,420)"/>
+    <wire from="(1030,1150)" to="(1040,1150)"/>
     <wire from="(980,810)" to="(980,1170)"/>
     <wire from="(270,700)" to="(290,700)"/>
     <wire from="(500,450)" to="(520,450)"/>
@@ -184,7 +185,6 @@
     <wire from="(510,160)" to="(550,160)"/>
     <wire from="(460,120)" to="(490,120)"/>
     <wire from="(490,320)" to="(510,320)"/>
-    <wire from="(1010,1150)" to="(1040,1150)"/>
     <wire from="(770,1070)" to="(800,1070)"/>
     <wire from="(500,340)" to="(510,340)"/>
     <wire from="(620,210)" to="(620,330)"/>
@@ -496,6 +496,7 @@
     <wire from="(980,810)" to="(1220,810)"/>
     <wire from="(620,870)" to="(1220,870)"/>
     <wire from="(630,1030)" to="(910,1030)"/>
+    <wire from="(1010,1150)" to="(1030,1150)"/>
     <wire from="(170,690)" to="(260,690)"/>
     <wire from="(300,910)" to="(330,910)"/>
     <wire from="(300,920)" to="(320,920)"/>
@@ -755,7 +756,7 @@
     <comp lib="1" loc="(1070,1160)" name="AND Gate">
       <a name="size" val="30"/>
       <a name="inputs" val="2"/>
-      <a name="negate1" val="true"/>
+      <a name="negate0" val="true"/>
     </comp>
     <comp lib="0" loc="(490,120)" name="Splitter">
       <a name="fanout" val="4"/>
@@ -3380,9 +3381,9 @@
     <wire from="(430,360)" to="(430,460)"/>
     <wire from="(430,260)" to="(430,360)"/>
     <wire from="(310,320)" to="(470,320)"/>
-    <wire from="(400,580)" to="(430,580)"/>
-    <wire from="(400,600)" to="(430,600)"/>
     <wire from="(830,370)" to="(830,410)"/>
+    <wire from="(400,580)" to="(430,580)"/>
+    <wire from="(400,560)" to="(430,560)"/>
     <wire from="(830,410)" to="(830,580)"/>
     <wire from="(350,480)" to="(370,480)"/>
     <wire from="(550,280)" to="(640,280)"/>
@@ -3396,7 +3397,7 @@
     <wire from="(430,460)" to="(500,460)"/>
     <wire from="(430,260)" to="(500,260)"/>
     <wire from="(430,190)" to="(430,260)"/>
-    <wire from="(400,560)" to="(460,560)"/>
+    <wire from="(400,600)" to="(460,600)"/>
     <wire from="(220,310)" to="(270,310)"/>
     <wire from="(600,360)" to="(640,360)"/>
     <wire from="(600,400)" to="(640,400)"/>
@@ -3438,7 +3439,6 @@
       <a name="width" val="2"/>
       <a name="tristate" val="false"/>
     </comp>
-    <comp lib="1" loc="(460,600)" name="NOT Gate"/>
     <comp lib="0" loc="(820,340)" name="Splitter">
       <a name="facing" val="west"/>
       <a name="fanout" val="3"/>
@@ -3453,6 +3453,7 @@
     <comp lib="1" loc="(550,280)" name="AND Gate">
       <a name="inputs" val="2"/>
     </comp>
+    <comp lib="1" loc="(460,580)" name="NOT Gate"/>
     <comp lib="0" loc="(380,580)" name="Splitter">
       <a name="fanout" val="5"/>
       <a name="incoming" val="5"/>
@@ -3461,7 +3462,6 @@
     <comp lib="1" loc="(420,500)" name="OR Gate">
       <a name="inputs" val="2"/>
     </comp>
-    <comp lib="1" loc="(460,580)" name="NOT Gate"/>
     <comp lib="1" loc="(600,400)" name="NOT Gate"/>
     <comp lib="0" loc="(290,190)" name="Splitter">
       <a name="appear" val="legacy"/>
@@ -3483,6 +3483,7 @@
       <a name="inputs" val="2"/>
     </comp>
     <comp lib="1" loc="(510,580)" name="AND Gate"/>
+    <comp lib="1" loc="(460,560)" name="NOT Gate"/>
     <comp lib="0" loc="(220,310)" name="Pin">
       <a name="width" val="5"/>
       <a name="tristate" val="false"/>
@@ -3913,7 +3914,7 @@
       <a name="dataWidth" val="16"/>
       <a name="contents">addr/data: 4 16
 5210 30 60 3000 480 2800 48 180
-8045 4002 3004 408
+8045 4002 3004 408 8005
 </a>
     </comp>
     <comp lib="6" loc="(1015,184)" name="Text">
@@ -3956,10 +3957,11 @@
       <a name="addrWidth" val="10"/>
       <a name="dataWidth" val="4"/>
       <a name="contents">addr/data: 10 4
-1 6 4*0 7 25*0 1 9 14*0
-1 b 9*0 9 4*0 1 8 446*0
-1 2 a 7*0 4 37*0 1 2
-3 4 124*0 1 2 5
+1 6 4*0 7 9*0 1 c 14*0
+1 9 14*0 1 b 9*0 9 4*0
+1 8 446*0 1 2 a 7*0 4
+37*0 1 2 3 4 124*0 1 2
+5
 </a>
     </comp>
     <comp lib="0" loc="(540,590)" name="Pin">
