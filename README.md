@@ -49,9 +49,10 @@ A instrução Jump and Link é muito semelhante à instrução JUMP. Aumentamos 
 - **(Multicycle)** Podemos utilizar o estado `9` para ler o novo PC de `IMED`. \
     **Estado B:**  PCWrite = 1; ALUOP = 10, causando Link=1
 
-    1. RI <- M[PC];  (Estado `0`)
-    2. BReg[31] <- PC (Novo Estado `B`)
-    3. PC <- IMED  (Estado `9`, usado em JUMP)
+
+        1. RI <- M[PC];  (Estado `0`)
+        2. BReg[31] <- PC (Novo Estado `B`)
+        3. PC <- IMED  (Estado `9`, usado em JUMP)
  
 ## Load Byte
 
@@ -70,10 +71,14 @@ A instrução Load Byte tem opcode `10 0000`. Portanto, ela é configurada na re
 
 ## Set on Less than Immediate Unsigned
 
-Para implementar SLTIU, utilizamos um comparador configurado como "unsigned". A saída `<` do comparador (após SGEXT de 1 para 32 bits) é colocada como entrada de um MUX, cuja outra entrada é ALU_OUT. Depois disso, basta escrever esta saída normalmente em BReg.
+- **(Monocycle)**:  Para implementar SLTIU, utilizamos um comparador configurado como "unsigned". A saída `<` do comparador (após SGEXT de 1 para 32 bits) é colocada como entrada de um MUX, cuja outra entrada é ALU_OUT. Depois disso, basta escrever esta saída normalmente em BReg.
 
-- **(Multicycle)** Não devemos implementar Podemos utilizar um novo estado `D`.
-    1. RI <- M[PC];   (estado `0`)
-    2. A <- Breg[ft1]; B <- Breg[ft2]; (estado `1`)
-    3. ALU_Out <- SgExt(A cmp (SgExt Imed)); (novo estado `D`)
-    4. Breg[ft2] <- ALU_Out (estado `7`)
+- **(Multicycle)**: A melhor estratégia que encontramos, dentro do contexto do multiciclo, é apenas criar uma nova operação (e o comparador) _dentro_ da ALU. Assim, precisaremos de um novo estado que mude o valor de ALUOP para um comparador. Essa é uma estratégia diferente daquela
+que utilizamos no monocycle. 
+
+    Podemos utilizar um novo estado `D`.
+
+        1. RI <- M[PC];   (estado `0`)
+        2. A <- Breg[ft1]; B <- Breg[ft2]; (estado `1`)
+        3. ALU_Out <- SgExt(A cmp (SgExt Imed)); (novo estado `D`)
+        4. Breg[ft2] <- ALU_Out (estado `7`)
