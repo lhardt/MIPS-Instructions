@@ -23,7 +23,7 @@ Instructions to implement:
 | DIV            | ✅             | 🟨               | ✅             |
 | JAL            | ✅             | 🟨               | ✅             |
 | LB             | ✅             | 🟨             | ✅             |
-| SLTIU          | ✅             | -               | ✅             |
+| SLTIU          | ✅             | ✅               | ✅             |
 
 # Implementação
 
@@ -71,14 +71,16 @@ A instrução Load Byte tem opcode `10 0000`. Portanto, ela é configurada na re
 
 ## Set on Less than Immediate Unsigned
 
-- **(Monocycle)**:  Para implementar SLTIU, utilizamos um comparador configurado como "unsigned". A saída `<` do comparador (após SGEXT de 1 para 32 bits) é colocada como entrada de um MUX, cuja outra entrada é ALU_OUT. Depois disso, basta escrever esta saída normalmente em BReg.
+Para implementar SLTIU, utilizamos um comparador configurado como "unsigned". Utilizamos a saída `<` do comparador (após SGEXT de 1 para 32 bits). 
 
-- **(Multicycle)**: A melhor estratégia que encontramos, dentro do contexto do multiciclo, é apenas criar uma nova operação (e o comparador) _dentro_ da ALU. Assim, precisaremos de um novo estado que mude o valor de ALUOP para um comparador. Essa é uma estratégia diferente daquela
+- **(Monocycle)**:  Essa saída é colocada como entrada de um MUX, cuja outra entrada é ALU_OUT. Depois disso, basta escrever esta saída normalmente em BReg. A estratégia de _Pipeline_ é semelhante.
+
+- **(Multicycle)**: A melhor estratégia que encontramos, dentro do contexto do multiciclo, é apenas criar uma nova operação (e o comparador) _dentro_ da ALU. Assim, precisaremos de um novo estado que mude o valor de ALUOP para um comparador (ALU_OP=5). Essa é uma estratégia diferente daquela
 que utilizamos no monocycle. 
 
-    Podemos utilizar um novo estado `D`.
+- **(Multicycle)** Podemos utilizar um novo estado `D` para representar o passo de atribuição de ALU_OUT. Como nas outras instruções, poderemos economizar HW significativente deixando `PCWrite=0, PCWriteCond=0, PCSource=3` para representar a condição de `Use_Comparator`, já que `PCSource=3` não tinha nenhum uso até então. Além disso, precisaremos usar `ALUSourceA=`
 
         1. RI <- M[PC];   (estado `0`)
         2. A <- Breg[ft1]; B <- Breg[ft2]; (estado `1`)
-        3. ALU_Out <- SgExt(A cmp (SgExt Imed)); (novo estado `D`)
+        3. ALU_Out <- SgExt(A cmp (SgExt Imed)); (novo estado `D`, ALU_Control = 101)
         4. Breg[ft2] <- ALU_Out (estado `7`)
