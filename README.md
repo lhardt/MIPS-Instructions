@@ -4,26 +4,12 @@ Instructions to implement:
 
 | **Instruction**   | **Name**  | **Representation**  | **ROM Code** | **Behavior**  |
 |-------|---|-------------------------|---| ---|
-| BLTZ  | Branch if less than zero  | 0000 01 SRC 0 0000 IMED | 01 |  Similar to BEQ <br> `if $s < 0 advance_pc (offset << 2)); else advance_pc (4);` |
+| BLTZ  | Branch if less than zero  | 0000 01 SRC 0 0000 IMED | 01 |  Similar ao BEQ <br> `if $s < 0 advance_pc (offset << 2)); else advance_pc (4);` |
 | DIV   | Divide | 0000 00 SRC TRG 0000 0000 0001 1010    | 00 |    `$LO = $s / $t; $HI = $s % $t; advance_pc (4); `|
-| JAL   | Jump and Link  | 0000 11 IMED            | 03 |  JMPs to the new address and saves the old one on register $31 <br> `$31 = PC + 8 (or nPC + 4); PC = nPC; nPC = (PC & 0xf0000000) \| (target << 2);` |
-| LB    | Load Byte  | 1000 00 SRC TRG IMED  | 20 | Loads one byte. <br>`$t = MEM[$s + offset]`  |
-| SLTIU | Set on less than immediate unsigned  | 0010 11 SRC TRG IMED        | 0B |  If r2 <= IMED (unsigned), r1 := 1, else r1 := 0 <br> `if $s < imm $t = 1; else $t = 0;` |
+| JAL   | Jump and Link  | 0000 11 IMED            | 03 |  JMP até o novo endereço. Salva o antigo em $31 |
+| LB    | Load Byte  | 1000 00 SRC TRG IMED  | 20 | Similar ao LW. Carrega um byte. <br>`$t = MEM[$s + offset]`  |
+| SLTIU | Set on less than immediate unsigned  | 0010 11 SRC TRG IMED        | 0B |  Se r2 <= IMED (unsigned), r1 := 1, senão r1 := 0 <br> `if $s < imm $t = 1; else $t = 0;` |
 
-
-# Progress Track
-
-- (-) Not done
-- 🟨 To test
-- ✅  Done
-
-| **Progress**   | **Monocycle**  | **Multicycle**  | **Pipeline**  |
-|----------------|----------------|-----------------|---------------|
-| BLTZ           | ✅             | 🟨               | ✅             |
-| DIV            | ✅             | 🟨               | ✅             |
-| JAL            | ✅             | 🟨               | ✅             |
-| LB             | ✅             | 🟨             | ✅             |
-| SLTIU          | ✅             | ✅               | ✅             |
 
 # Implementação
 
@@ -83,4 +69,6 @@ que utilizamos no monocycle.
         1. RI <- M[PC];   (estado `0`)
         2. A <- Breg[ft1]; B <- Breg[ft2]; (estado `1`)
         3. ALU_Out <- SgExt(A cmp (SgExt Imed)); (novo estado `D`, ALU_Control = 101)
+        4. Breg[ft2] <- ALU_Out (estado `7`)
+        3. ALU_Out <- SgExt(A cmp (SgExt Imed)); (novo estado `D`)
         4. Breg[ft2] <- ALU_Out (estado `7`)
